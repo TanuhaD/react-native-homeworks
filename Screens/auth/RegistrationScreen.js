@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
-  Alert,
   StyleSheet,
   KeyboardAvoidingView,
   View,
@@ -10,43 +9,41 @@ import {
   ImageBackground,
   Keyboard,
   TouchableWithoutFeedback,
-  Dimensions,
+  useWindowDimensions,
 } from "react-native";
+import { useDispatch } from "react-redux";
+import { logIn } from "../../redux/auth/authSlice";
 
 const initialState = {
+  name: "",
   password: "",
   email: "",
 };
 
-const LoginScreen = () => {
+const RegistrationScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
   const [state, setState] = useState(initialState);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-  const [dimensions, setdimensions] = useState(Dimensions.get("window").width);
-
-  useEffect(() => {
-    const onChange = () => {
-      const width = Dimensions.get("window").width;
-      setdimensions(width);
-    };
-    Dimensions.addEventListener("change", onChange);
-    return () => {
-      Dimensions.removeEventListener("change", onChange);
-    };
-  }, []);
+  const { width } = useWindowDimensions();
   const keyboardHide = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
     console.log(state);
     setState(initialState);
   };
+
   const onRegistration = () => {
-    Alert.alert("Credentials", `${state.email} + ${state.password}`);
+    dispatch(logIn());
+    console.log(
+      "Credentials",
+      `${state.name} +${state.email} + ${state.password}`
+    );
   };
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container}>
         <ImageBackground
-          source={require("../assets/images/photoBG.png")}
+          source={require("../../assets/images/photoBG.png")}
           style={styles.image}
         >
           <KeyboardAvoidingView
@@ -56,11 +53,20 @@ const LoginScreen = () => {
             <View
               style={{
                 ...styles.form,
-                paddingBottom: isShowKeyboard ? 32 : 179,
-                width: dimensions,
+                paddingBottom: isShowKeyboard ? 32 : 113,
+                width,
               }}
             >
-              <Text style={styles.title}>Войти</Text>
+              <Text style={styles.title}>Регистрация</Text>
+              <TextInput
+                value={state.name}
+                onChangeText={(value) =>
+                  setState((prevState) => ({ ...prevState, name: value }))
+                }
+                placeholder="Логин"
+                style={styles.input}
+                onFocus={() => setIsShowKeyboard(true)}
+              />
               <TextInput
                 value={state.email}
                 onChangeText={(value) =>
@@ -86,8 +92,18 @@ const LoginScreen = () => {
                 style={styles.btn}
                 onPress={onRegistration}
               >
-                <Text style={styles.textBtn}>Войти</Text>
+                <Text style={styles.textBtn}>Зарегистрироваться</Text>
               </TouchableOpacity>
+              <View style={styles.btnBottom}>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => navigation.navigate("Login")}
+                >
+                  <Text style={styles.textBtnBottom}>
+                    Уже есть аккаунт? Войти
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </KeyboardAvoidingView>
         </ImageBackground>
@@ -113,11 +129,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
-    paddingTop: 32,
+    paddingTop: 92,
   },
   title: {
-    fontWeight: "500",
     fontFamily: "Roboto-Bold",
+    fontWeight: "500",
     textAlign: "center",
     fontSize: 30,
     lineHeight: 35,
@@ -154,6 +170,17 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     color: "#FFFFFF",
   },
+  btnBottom: {
+    marginTop: 16,
+  },
+
+  textBtnBottom: {
+    textAlign: "center",
+    color: "#1B4371",
+    fontSize: 16,
+    lineHeight: 19,
+    fontFamily: "Roboto-Regular",
+  },
 });
 
-export default LoginScreen;
+export default RegistrationScreen;

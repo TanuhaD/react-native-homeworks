@@ -1,10 +1,11 @@
 import React, { useCallback } from "react";
 import { StyleSheet, View } from "react-native";
-// import LoginScreen from "./Screens/LoginScreen";
-import RegistrationScreen from "./Screens/RegistrationScreen";
+import { NavigationContainer } from "@react-navigation/native";
+import { Provider } from "react-redux";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-
+import Routing from "./components/Routing/Routing";
+import { store } from "./redux/store";
 SplashScreen.preventAutoHideAsync();
 
 const App = () => {
@@ -24,10 +25,13 @@ const App = () => {
   }
 
   return (
-    <View style={styles.container} onLayout={onLayoutRootView}>
-      <RegistrationScreen />
-      {/* <LoginScreen /> */}
-    </View>
+    <Provider store={store}>
+      <View style={styles.container} onLayout={onLayoutRootView}>
+        <NavigationContainer>
+          <Routing />
+        </NavigationContainer>
+      </View>
+    </Provider>
   );
 };
 
