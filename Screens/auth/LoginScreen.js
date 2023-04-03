@@ -50,7 +50,7 @@ const LoginScreen = ({ navigation }) => {
             <View
               style={{
                 ...styles.form,
-                paddingBottom: isShowKeyboard ? 32 : 179,
+                paddingBottom: isShowKeyboard ? 32 : 160,
                 width,
               }}
             >

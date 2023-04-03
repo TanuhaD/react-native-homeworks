@@ -7,7 +7,8 @@ import CommentsScreen from "../NesteScreens/CommentsScreen";
 import HomeScreen from "../NesteScreens/HomeScreen";
 import MapScreen from "../NesteScreens/MapScreen";
 
-const PostsScreen = () => {
+const PostsScreen = ({ route }) => {
+  console.log("route.params", route.params);
   const PostScreenStack = createNativeStackNavigator();
   return (
     <PostScreenStack.Navigator>
@@ -31,6 +32,7 @@ const PostsScreen = () => {
       />
       <PostScreenStack.Screen
         options={{
+          unmountOnBlur: true,
           headerTitle: () => {
             return (
               <Header
@@ -46,6 +48,7 @@ const PostsScreen = () => {
       />
       <PostScreenStack.Screen
         options={{
+          unmountOnBlur: true,
           headerTitle: () => {
             return (
               <Header

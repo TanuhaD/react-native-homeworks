@@ -55,6 +55,7 @@ const Routing = () => {
       />
       <MainTab.Screen
         options={{
+          unmountOnBlur: true,
           tabBarIcon: ({ focused }) => {
             const props = focused
               ? { btnFill: "#FF0000" }

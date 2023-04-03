@@ -1,18 +1,43 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Dimensions } from "react-native";
+import MapView, { Marker } from "react-native-maps";
 
-const MapScreen = ({ navigation }) => {
+const MapScreen = ({ route }) => {
+  const { latitude = 37, longitude = 37 } = route.params.location;
   return (
-    <View>
-      <Text>MapScreen</Text>
+    <View style={styles.container}>
+      <MapView
+        style={styles.mapStyle}
+        region={{
+          latitude,
+          longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+        mapType="standard"
+        minZoomLevel={15}
+        onMapReady={() => console.log("Map is ready")}
+        onRegionChange={() => console.log("Region change")}
+      >
+        <Marker
+          title="Place"
+          coordinate={{ latitude, longitude }}
+          description="Place"
+        />
+      </MapView>
     </View>
   );
 };
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    backgroundColor: "#fff",
     alignItems: "center",
+    justifyContent: "center",
+  },
+  mapStyle: {
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
   },
 });
 

@@ -1,17 +1,34 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  ScrollView,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
+import { useSelector } from "react-redux";
+import Post from "../../components/Post/Post";
+import { selectPosts } from "../../redux/posts/postsSelectors";
 
 const HomeScreen = ({ navigation }) => {
+  const postList = useSelector(selectPosts);
+  console.log("postList", postList);
   return (
-    <View>
-      <Text>HomeScreen</Text>
-      <TouchableOpacity onPress={() => navigation.navigate("Comments")}>
-        <Text>go to Comments</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("Maps")}>
-        <Text>go to Maps</Text>
-      </TouchableOpacity>
-    </View>
+    <ScrollView style={{ marginHorizontal: 10 }}>
+      {postList?.length > 0 &&
+        postList.map(({ title, map, location, photo }) => {
+          return (
+            <Post
+              key={location.timestamp}
+              title={title}
+              map={map}
+              location={location}
+              photo={photo}
+              navigation={navigation}
+            />
+          );
+        })}
+    </ScrollView>
   );
 };
 const styles = StyleSheet.create({
