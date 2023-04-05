@@ -8,7 +8,6 @@ import HomeScreen from "../NesteScreens/HomeScreen";
 import MapScreen from "../NesteScreens/MapScreen";
 
 const PostsScreen = ({ route }) => {
-  console.log("route.params", route.params);
   const PostScreenStack = createNativeStackNavigator();
   return (
     <PostScreenStack.Navigator>

@@ -1,27 +1,40 @@
 import React from "react";
 
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useDispatch, useSelector } from "react-redux";
 import LoginScreen from "../../Screens/auth/LoginScreen";
 import RegistrationScreen from "../../Screens/auth/RegistrationScreen";
-import PostsScreen from "../../Screens/mainScreen/PostsScreen";
 import CreateScreen from "../../Screens/mainScreen/CreateScreen";
+import PostsScreen from "../../Screens/mainScreen/PostsScreen";
 import ProfileScreen from "../../Screens/mainScreen/ProfileScreen";
+import { app } from "../../firebase/config";
+import { selectUid } from "../../redux/auth/authSelectors";
+import { setUid, setUserData } from "../../redux/auth/authSlice";
 import Grid from "../BarImages/Grid";
 import NewBtn from "../BarImages/NewBtn";
 import UserBtn from "../BarImages/UserBtn";
-import { useSelector } from "react-redux";
-import { selectIsLoggedIn } from "../../redux/auth/authSelectors";
-import { Button } from "react-native";
-import Header from "../Header/Header";
-import LogOutBtn from "../LogOutBtn/LogOutBtn";
 
 const AuthStack = createNativeStackNavigator();
 const MainTab = createBottomTabNavigator();
+const auth = getAuth(app);
 
 const Routing = () => {
-  const isAuth = useSelector(selectIsLoggedIn);
-  if (!isAuth) {
+  const isAuth = useSelector(selectUid);
+  if (isAuth === "") {
+    const dispatch = useDispatch();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const { email, displayName, uid } = user;
+        dispatch(setUserData({ email, uid, displayName }));
+      } else {
+        dispatch(setUid(null));
+      }
+    });
+    return null;
+  }
+  if (isAuth === null) {
     return (
       <AuthStack.Navigator>
         <AuthStack.Screen

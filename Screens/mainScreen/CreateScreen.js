@@ -1,22 +1,27 @@
-import React, { useState, useEffect } from "react";
-import { Camera, CameraType } from "expo-camera";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  KeyboardAvoidingView,
-  TextInput,
-  TouchableWithoutFeedback,
-  useWindowDimensions,
-  Keyboard,
-} from "react-native";
-import useKeyboard from "../../hooks/useKeyboard";
-import CameraSvg from "../../components/CameraSvg/CameraSvg";
+import { Camera } from "expo-camera";
 import * as Location from "expo-location";
+import { doc, setDoc } from "firebase/firestore";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import React, { useEffect, useState } from "react";
+import {
+  Image,
+  Keyboard,
+  KeyboardAvoidingView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+  useWindowDimensions,
+} from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import CameraSvg from "../../components/CameraSvg/CameraSvg";
+import { db } from "../../firebase/config";
+import useKeyboard from "../../hooks/useKeyboard";
+import { selectUid } from "../../redux/auth/authSelectors";
 import { addNewPost } from "../../redux/posts/postsSlice";
-import { useDispatch } from "react-redux";
+import { nanoid } from "@reduxjs/toolkit";
 
 const initialState = {
   title: "",
@@ -32,6 +37,8 @@ const CreateScreen = ({ navigation }) => {
   const [state, setState] = useState(initialState);
   const { width } = useWindowDimensions();
   const dispatch = useDispatch();
+  const storage = getStorage();
+  const uid = useSelector(selectUid);
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
@@ -45,7 +52,6 @@ const CreateScreen = ({ navigation }) => {
   }, []);
 
   const keyboardHide = () => {
-    console.log("keyboard hide");
     Keyboard.dismiss();
   };
   const takePhoto = async () => {
@@ -58,8 +64,23 @@ const CreateScreen = ({ navigation }) => {
       timestamp: location.timestamp,
     });
   };
-  const publicNewPost = () => {
-    console.log("public post");
+  const publicNewPost = async () => {
+    const response = await fetch(photo);
+    const file = await response.blob();
+    const uniquePostId = Date.now().toString();
+    const storageRef = ref(storage, `postImage/${uniquePostId}`);
+    try {
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      const docRef = doc(db, "posts", uid, "postCollection", nanoid());
+      await setDoc(docRef, {
+        ...state,
+        location,
+        photo: url,
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
     dispatch(addNewPost({ ...state, photo, location }));
     setPhoto(null);
     setLocation(null);
@@ -128,7 +149,6 @@ const CreateScreen = ({ navigation }) => {
               onPress={
                 photo && location && state.title && state.map
                   ? () => {
-                      console.log("first function");
                       publicNewPost();
                     }
                   : () => {

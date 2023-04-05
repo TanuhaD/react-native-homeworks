@@ -12,7 +12,8 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { useDispatch } from "react-redux";
-import { logIn } from "../../redux/auth/authSlice";
+
+import { authSignUp } from "../../redux/auth/authOperations";
 
 const initialState = {
   name: "",
@@ -33,10 +34,16 @@ const RegistrationScreen = ({ navigation }) => {
   };
 
   const onRegistration = () => {
-    dispatch(logIn());
-    console.log(
-      "Credentials",
-      `${state.name} +${state.email} + ${state.password}`
+    // const {email, password, name} = state;
+    // const email = state.email;
+    // const password = state.password;
+    // const displayName = state.name;
+    dispatch(
+      authSignUp({
+        email: state.email,
+        password: state.password,
+        displayName: state.name,
+      })
     );
   };
   return (
@@ -73,7 +80,6 @@ const RegistrationScreen = ({ navigation }) => {
                   setState((prevState) => ({ ...prevState, email: value }))
                 }
                 placeholder="Адрес электронной почты"
-                secureTextEntry={true}
                 style={styles.input}
                 onFocus={() => setIsShowKeyboard(true)}
               />

@@ -4,7 +4,7 @@ import CommentSvg from "../CommentSvg/CommentSvg";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import MapSvg from "../MapSvg/MapSvg";
 
-const Post = ({ title, location, map, photo, navigation }) => {
+const Post = ({ title, location, map, photo, navigation, id }) => {
   return (
     <View style={styles.container}>
       <Image source={{ uri: photo }} style={styles.image}></Image>
@@ -12,7 +12,7 @@ const Post = ({ title, location, map, photo, navigation }) => {
       <View style={styles.wrappContainer}>
         <TouchableOpacity
           style={styles.wrappComment}
-          onPress={() => navigation.navigate("Comments")}
+          onPress={() => navigation.navigate("Comments", { id, photo, title })}
         >
           <CommentSvg />
           <Text style={styles.textComment}>0</Text>

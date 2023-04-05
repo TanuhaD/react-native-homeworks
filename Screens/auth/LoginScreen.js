@@ -12,7 +12,8 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { useDispatch } from "react-redux";
-import { logIn } from "../../redux/auth/authSlice";
+
+import { authSignIn } from "../../redux/auth/authOperations";
 
 const initialState = {
   password: "",
@@ -33,8 +34,12 @@ const LoginScreen = ({ navigation }) => {
     setState(initialState);
   };
   const onLogin = () => {
-    console.log("Credentials", `${state.email} + ${state.password}`);
-    dispatch(logIn());
+    dispatch(
+      authSignIn({
+        email: state.email,
+        password: state.password,
+      })
+    );
   };
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
@@ -61,7 +66,6 @@ const LoginScreen = ({ navigation }) => {
                   setState((prevState) => ({ ...prevState, email: value }))
                 }
                 placeholder="Адрес электронной почты"
-                secureTextEntry={true}
                 style={styles.input}
                 onFocus={() => setIsShowKeyboard(true)}
               />
