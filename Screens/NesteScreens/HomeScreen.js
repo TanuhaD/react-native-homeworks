@@ -1,27 +1,29 @@
+import { collection, getDocs } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import Post from "../../components/Post/Post";
-import { selectPosts } from "../../redux/posts/postsSelectors";
-import { collection, doc, getDocs } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import { selectUid } from "../../redux/auth/authSelectors";
 
 const HomeScreen = ({ navigation }) => {
-  // const postList = useSelector(selectPosts);
   const [postList, setPostList] = useState([]);
   const uid = useSelector(selectUid);
 
   useEffect(() => {
-    getDocs(collection(db, "posts", uid, "postCollection")).then(
-      (querySnapshot) => {
-        const arr = [];
-        querySnapshot.forEach((post) => {
-          arr.push({ ...post.data(), id: post.id });
-        });
-        setPostList(arr);
-      }
-    );
+    try {
+      getDocs(collection(db, "posts", uid, "postCollection")).then(
+        (querySnapshot) => {
+          const arr = [];
+          querySnapshot.forEach((post) => {
+            arr.push({ ...post.data(), id: post.id });
+          });
+          setPostList(arr);
+        }
+      );
+    } catch (error) {
+      console.log(error.message);
+    }
   }, []);
 
   return (

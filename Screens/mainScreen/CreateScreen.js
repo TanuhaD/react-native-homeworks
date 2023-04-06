@@ -22,6 +22,7 @@ import useKeyboard from "../../hooks/useKeyboard";
 import { selectUid } from "../../redux/auth/authSelectors";
 import { addNewPost } from "../../redux/posts/postsSlice";
 import { nanoid } from "@reduxjs/toolkit";
+import AnimatedLoader from "react-native-animated-loader";
 
 const initialState = {
   title: "",
@@ -29,6 +30,7 @@ const initialState = {
 };
 
 const CreateScreen = ({ navigation }) => {
+  const [visible, setVisible] = useState(false);
   const [location, setLocation] = useState(null);
   const isKeyboardOpen = useKeyboard();
   const [hasPermission, setHasPermission] = useState(null);
@@ -65,6 +67,7 @@ const CreateScreen = ({ navigation }) => {
     });
   };
   const publicNewPost = async () => {
+    setVisible(true);
     const response = await fetch(photo);
     const file = await response.blob();
     const uniquePostId = Date.now().toString();
@@ -85,8 +88,22 @@ const CreateScreen = ({ navigation }) => {
     setPhoto(null);
     setLocation(null);
     setState(initialState);
+    setVisible(false);
     navigation.navigate("PostsScreen");
   };
+  if (visible) {
+    return (
+      <AnimatedLoader
+        visible={visible}
+        overlayColor="rgba(255,255,255,0.75)"
+        animationStyle={styles.lottie}
+        speed={1}
+      >
+        <Text>Загружаем пост на сервер...</Text>
+      </AnimatedLoader>
+    );
+  }
+
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container}>
@@ -175,6 +192,10 @@ const CreateScreen = ({ navigation }) => {
   );
 };
 const styles = StyleSheet.create({
+  lottie: {
+    width: 100,
+    height: 100,
+  },
   container: {
     width: "100%",
     backgroundColor: "#ffffff",

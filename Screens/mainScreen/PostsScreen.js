@@ -13,6 +13,7 @@ const PostsScreen = ({ route }) => {
     <PostScreenStack.Navigator>
       <PostScreenStack.Screen
         options={{
+          unmountOnBlur: true,
           headerTitle: () => {
             return (
               <Header

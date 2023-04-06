@@ -54,6 +54,7 @@ const Routing = () => {
     <MainTab.Navigator>
       <MainTab.Screen
         options={{
+          unmountOnBlur: true,
           tabBarShowLabel: false,
           tabBarIcon: ({ focused }) => {
             const props = focused

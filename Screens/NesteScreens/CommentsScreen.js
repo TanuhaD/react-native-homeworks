@@ -78,7 +78,7 @@ const CommentsScreen = ({ route }) => {
           renderItem={({ item }) => (
             <View style={styles.wrappComment}>
               <Text>{item.name}</Text>
-              <Text>{item.comment}</Text>
+              <Text style={styles.textComment}>{item.comment}</Text>
             </View>
           )}
           keyExtractor={(item) => item.id}
@@ -110,12 +110,26 @@ const styles = StyleSheet.create({
   },
   image: {
     marginTop: 32,
-    // marginHorizontal: 16,
+    marginHorizontal: 16,
     backgroundColor: "#F6F6F6",
     borderRadius: 8,
     overflow: "hidden",
-    width: "100%",
+
     height: 240,
+  },
+  wrappComment: {
+    marginTop: 16,
+    marginHorizontal: 16,
+    marginBottom: 10,
+    borderRadius: 100,
+    paddingLeft: 10,
+    backgroundColor: "#F6F6F6",
+    borderColor: "#E8E8E8",
+  },
+  textComment: {
+    fontSize: 16,
+    lineHeight: 19,
+    color: "#BDBDBD",
   },
   form: {
     flex: 1,
@@ -137,9 +151,12 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-Regular",
     marginBottom: 32,
   },
-  // btnComment: {
-  //   position: "absolute",
-  // },
+  btnComment: {
+    position: "absolute",
+    flex: 1,
+    bottom: 41,
+    left: 330,
+  },
 });
 
 export default CommentsScreen;
